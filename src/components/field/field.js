@@ -1,42 +1,53 @@
 //import { useDispatch, useReduxState } from '../../redux-manager';
 import { FieldLayout } from './field-layout';
 import { checkEmptyCell, checkWin } from '../../utils';
-import { setCurrentPlayer, setField, setStatus } from '../../actions';
+//import { setCurrentPlayer, setField, setStatus } from '../../actions';
 import { PLAYER, STATUS } from '../../constants';
-import { useSelector, useDispatch } from 'react-redux';
+import { Component, setState } from 'react';
+//import { useSelector, useDispatch } from 'react-redux';
 
-export const Field = () => {
-	//const { status, field, currentPlayer } = useReduxState();
-	const status = useSelector((state) => state.status);
-	const field = useSelector((state) => state.field);
-	const currentPlayer = useSelector((state) => state.currentPlayer);
-	const dispatch = useDispatch();
-	console.log(field);
-	const handleCellClick = (cellIndex) => {
+export class Field extends Component {
+	constructor(props) {
+		super(props);
+		//const { status, field, currentPlayer } = useReduxState();
+		this.state = {
+			status: props.status,
+			field: props.field,
+			currentPlayer: props.currentPlayer,
+		};
+	}
+	handleCellClick = (cellIndex) => {
 		if (
-			status === STATUS.WIN ||
-			status === STATUS.DRAW ||
-			field[cellIndex] !== PLAYER.NOBODY
+			this.state.status === STATUS.WIN ||
+			this.state.status === STATUS.DRAW ||
+			this.state.field[cellIndex] !== PLAYER.NOBODY
 		) {
 			return;
 		}
 
-		const newField = [...field];
+		const newField = [...this.state.field];
+		newField[cellIndex] = this.state.currentPlayer;
 
-		newField[cellIndex] = currentPlayer;
+		//dispatch(setField(newField));
+		this.setState({ field: newField });
 
-		dispatch(setField(newField));
-
-		if (checkWin(newField, currentPlayer)) {
-			dispatch(setStatus(STATUS.WIN));
+		if (checkWin(newField, this.state.currentPlayer)) {
+			//dispatch(setStatus(STATUS.WIN));
+			this.setState({ status: STATUS.WIN });
 		} else if (checkEmptyCell(newField)) {
 			const newCurrentPlayer =
-				currentPlayer === PLAYER.CROSS ? PLAYER.NOUGHT : PLAYER.CROSS;
-			dispatch(setCurrentPlayer(newCurrentPlayer));
+				this.state.currentPlayer === PLAYER.CROSS ? PLAYER.NOUGHT : PLAYER.CROSS;
+			//dispatch(setCurrentPlayer(newCurrentPlayer));
+			this.setState({ currentPlayer: newCurrentPlayer });
 		} else {
-			dispatch(setStatus(STATUS.DRAW));
+			//dispatch(setStatus(STATUS.DRAW));
+			this.setState({ status: STATUS.DRAW });
 		}
 	};
+	//getDerivedStateFromProps(props,state) ;
 
-	return <FieldLayout field={field} handleCellClick={handleCellClick} />;
-};
+	render() {
+		const handleCellClick = this.handleCellClick.bind(this);
+		return <FieldLayout field={this.state.field} handleCellClick={handleCellClick} />;
+	}
+}

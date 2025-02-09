@@ -1,13 +1,14 @@
-import { useDispatch } from 'react-redux';
+//import { useDispatch } from 'react-redux';
 import { GameLayout } from './game-layout';
 import { RESTART_GAME } from './actions';
 
 export const Game = () => {
-	const dispatch = useDispatch();
+	//const dispatch = useDispatch();
 
-	const handleRestart = () => {
-		dispatch(RESTART_GAME);
-	};
+	//const handleRestart = () => {
+	//	dispatch(RESTART_GAME);
+	//};
 
-	return <GameLayout handleRestart={handleRestart} />;
+	return <GameLayout />;
+	//handleRestart={handleRestart} />;
 };
